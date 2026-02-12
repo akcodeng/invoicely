@@ -3,11 +3,10 @@
 import { CircleOpenArrowRight, GithubIcon, Star } from "@/assets/icons";
 import { PostHogAnalytics } from "@/components/ui/posthog-analytics";
 import { useGithubStars } from "@/hooks/use-github-stars";
-import { ScribbledArrowToRight } from "@/assets/svgs";
 import { Button } from "@/components/ui/button";
 import NumberFlow from "@number-flow/react";
 import { LINKS } from "@/constants/links";
-import Image from "next/image";
+import { motion } from "motion/react";
 import Link from "next/link";
 import React from "react";
 
@@ -15,66 +14,97 @@ const Hero = () => {
   const { stars } = useGithubStars();
 
   return (
-    <div className="relative flex h-[calc(100svh-64px-150px)] flex-row items-center overflow-hidden border-b border-dashed">
-      <div className="absolute inset-0 h-full w-full overflow-hidden">
-        <Image
-          className="h-full min-h-full w-full object-cover object-left invert dark:invert-0"
-          src="/official/invoicely-masked-background.png"
-          alt="Hero"
-          width={1920}
-          height={1080}
+    <section className="relative flex min-h-[calc(100svh-64px-200px)] flex-col items-center justify-center overflow-hidden border-b border-dashed px-6 py-20 text-center">
+      {/* Background grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
         />
       </div>
-      <div className="z-10 flex flex-col gap-4">
-        <div className="flex flex-row items-center gap-2 px-6">
-          <div className="bg-muted/20 relative flex h-7 w-16 flex-row items-center gap-2 rounded-md border px-2">
-            <Star className="size-4 text-yellow-500" />
-            <span className="urbanist absolute right-3 text-sm font-semibold">
+
+      {/* Subtle radial glow */}
+      <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="z-10 flex flex-col items-center gap-6"
+      >
+        {/* GitHub stars badge */}
+        <div className="flex flex-row items-center gap-3">
+          <div className="flex flex-row items-center">
+            <div className="from-border h-px w-12 bg-gradient-to-l to-transparent sm:w-24" />
+            <div className="bg-border h-1 w-1" />
+          </div>
+          <Link
+            href={LINKS.SOCIALS.GITHUB}
+            target="_blank"
+            className="bg-muted/40 flex h-8 flex-row items-center gap-2 rounded-full border px-3 transition-colors hover:bg-muted/60"
+          >
+            <Star className="size-3.5 text-yellow-500" />
+            <span className="jetbrains-mono text-foreground text-xs font-semibold">
               <NumberFlow value={stars} />
             </span>
-          </div>
+            <span className="jetbrains-mono text-muted-foreground text-[10px]">stars</span>
+          </Link>
           <div className="flex flex-row items-center">
-            <div className="bg-muted/20 h-1.5 w-1.5 border"></div>
-            <div className="from-muted h-px w-40 bg-gradient-to-r to-transparent"></div>
+            <div className="bg-border h-1 w-1" />
+            <div className="from-border h-px w-12 bg-gradient-to-r to-transparent sm:w-24" />
           </div>
         </div>
-        <div className="instrument-serif flex flex-col gap-2 px-6 text-6xl">
-          <h1 className="dark:text-primary-foreground/30 text-secondary-foreground/50">
-            Create <span className="dark:text-primary-foreground text-secondary-foreground">Beautiful</span> Invoices
+
+        {/* Main headline */}
+        <div className="flex flex-col gap-2">
+          <h1 className="instrument-serif text-balance text-5xl leading-[1.1] tracking-tight sm:text-7xl">
+            <span className="text-foreground">Create Beautiful</span>
+            <br />
+            <span className="text-muted-foreground/50">Invoices, Not</span>{" "}
+            <span className="text-foreground">Ugly</span>{" "}
+            <span className="text-muted-foreground/50">Ones</span>
           </h1>
-          <h2 className="dark:text-primary-foreground/30 text-secondary-foreground/50">
-            Not <span className="dark:text-primary-foreground text-secondary-foreground">Ugly</span> Ones
-          </h2>
         </div>
-        <div className="mt-4 flex flex-row gap-4 px-6">
+
+        {/* Subtitle */}
+        <p className="jetbrains-mono text-muted-foreground max-w-md text-xs leading-relaxed tracking-tight sm:text-sm">
+          The open-source invoice generator that makes billing effortless.
+          Professional templates, unlimited exports, zero cost.
+        </p>
+
+        {/* CTA buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          className="mt-2 flex flex-row gap-3"
+        >
           <Link href={LINKS.CREATE.INVOICE}>
-            <Button>
-              <span>Get Started</span>
+            <Button size="lg">
+              <span>Start Invoicing</span>
               <CircleOpenArrowRight className="-rotate-45" />
             </Button>
           </Link>
-          <div className="relative">
-            <PostHogAnalytics
-              analytics={{
-                name: "github-open-source-click",
-                group: "landing-page",
-              }}
-            >
-              <Link target="_blank" href={LINKS.SOCIALS.GITHUB}>
-                <Button variant="secondary">
-                  <span>Open Source</span>
-                  <GithubIcon />
-                </Button>
-              </Link>
-            </PostHogAnalytics>
-            <span className="jetbrains-mono text-muted-foreground/20 pointer-events-none absolute -top-10 left-40 size-full -rotate-[34deg] text-[10px]">
-              Give Star <br /> please :3 <br /> for cookie
-            </span>
-            <ScribbledArrowToRight className="text-muted-foreground/20 pointer-events-none absolute top-2 left-22 size-full rotate-[190deg]" />
-          </div>
-        </div>
-      </div>
-    </div>
+          <PostHogAnalytics
+            analytics={{
+              name: "github-open-source-click",
+              group: "landing-page",
+            }}
+          >
+            <Link target="_blank" href={LINKS.SOCIALS.GITHUB}>
+              <Button variant="secondary" size="lg">
+                <GithubIcon className="size-4" />
+                <span>View Source</span>
+              </Button>
+            </Link>
+          </PostHogAnalytics>
+        </motion.div>
+      </motion.div>
+    </section>
   );
 };
 
